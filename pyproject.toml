@@ -73,9 +73,9 @@ all = [
 rag = "rag.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/jjsanda/rag-system"
-Repository = "https://github.com/jjsanda/rag-system"
-Issues = "https://github.com/jjsanda/rag-system/issues"
+Homepage = "https://github.com/jjsanda/rag_system"
+Repository = "https://github.com/jjsanda/rag_system"
+Issues = "https://github.com/jjsanda/rag_system/issues"
 
 # uv dependency group (PEP 735) for dev/test tooling, not shipped with the package.
 [dependency-groups]

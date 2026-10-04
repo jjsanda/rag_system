@@ -4,9 +4,9 @@ description: A provider-agnostic Retrieval-Augmented Generation service (FastAPI
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
-home: https://github.com/jjsanda/rag-system
+home: https://github.com/jjsanda/rag_system
 sources:
-  - https://github.com/jjsanda/rag-system
+  - https://github.com/jjsanda/rag_system
 keywords:
   - rag
   - retrieval-augmented-generation

@@ -2,7 +2,7 @@
 
 > A provider-agnostic Retrieval-Augmented Generation service: ingest documents, retrieve the relevant passages, and stream an answer that cites its sources. Hexagonal architecture, local or cloud providers switchable by config, and an offline default so it runs end to end on a fresh clone without any API keys.
 
-[![CI](https://github.com/jjsanda/rag-system/actions/workflows/ci.yml/badge.svg)](https://github.com/jjsanda/rag-system/actions/workflows/ci.yml) [![CodeQL](https://github.com/jjsanda/rag-system/actions/workflows/codeql.yml/badge.svg)](https://github.com/jjsanda/rag-system/actions/workflows/codeql.yml) ![coverage](https://img.shields.io/badge/coverage-91%25-brightgreen) ![python](https://img.shields.io/badge/python-3.11%2B-blue) [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
+[![CI](https://github.com/jjsanda/rag_system/actions/workflows/ci.yml/badge.svg)](https://github.com/jjsanda/rag_system/actions/workflows/ci.yml) [![CodeQL](https://github.com/jjsanda/rag_system/actions/workflows/codeql.yml/badge.svg)](https://github.com/jjsanda/rag_system/actions/workflows/codeql.yml) ![coverage](https://img.shields.io/badge/coverage-91%25-brightgreen) ![python](https://img.shields.io/badge/python-3.11%2B-blue) [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 
 <p align="center">
   <img src="docs/diagrams/03-container.png" alt="RAG System architecture" width="760"> 

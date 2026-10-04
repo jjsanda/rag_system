@@ -3,7 +3,7 @@
 # + FAISS); no secrets required. Switch providers/stores by editing `config`/`secrets`.
 
 image:
-  repository: ghcr.io/jjsanda/rag-system
+  repository: ghcr.io/jjsanda/rag_system
   tag: "" # defaults to the chart appVersion
   pullPolicy: IfNotPresent
 imagePullSecrets: []
