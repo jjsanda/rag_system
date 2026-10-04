@@ -1,0 +1,35 @@
+name: Helm
+
+on:
+  push:
+    branches: [main]
+    paths: ["deploy/helm/**", ".github/workflows/helm.yml"]
+  pull_request:
+    paths: ["deploy/helm/**", ".github/workflows/helm.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-template:
+    name: helm lint + template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+      - name: helm lint
+        run: helm lint deploy/helm/rag-system
+      - name: Render with defaults
+        run: helm template rel deploy/helm/rag-system > /dev/null
+      - name: Render with all optional features enabled
+        run: >
+          helm template rel deploy/helm/rag-system
+          --set qdrant.enabled=true
+          --set ingress.enabled=true
+          --set api.autoscaling.enabled=true
+          --set api.persistence.enabled=true
+          --set secrets.OPENAI_API_KEY=dummy
+          > /dev/null

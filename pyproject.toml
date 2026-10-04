@@ -1,0 +1,204 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rag-system"
+version = "0.1.0"
+description = "A provider-agnostic Retrieval-Augmented Generation (RAG) service with a hexagonal architecture."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Josef Sanda", email = "pepek.svanda@gmail.com" }]
+keywords = ["rag", "retrieval-augmented-generation", "fastapi", "llm", "embeddings", "vector-search"]
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+
+# Core runtime deps, kept lightweight so the offline-deterministic default stack
+# (fake embedder + extractive answerer + FAISS) installs with zero heavy ML wheels.
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "httpx>=0.27",
+    "sse-starlette>=2.1",
+    "structlog>=24.1",
+    "prometheus-client>=0.20",
+    "tenacity>=8.5",
+    "tiktoken>=0.7",
+    "numpy>=1.26",
+    "faiss-cpu>=1.8",
+    "diskcache>=5.6",
+    "python-multipart>=0.0.9",
+    "rich>=13.7",
+    "typing-extensions>=4.12",
+]
+
+[project.optional-dependencies]
+# --- Swappable providers / stores (config-only switches) ---
+local = ["sentence-transformers>=3.0"]
+openai = ["openai>=1.40"]
+anthropic = ["anthropic>=0.40"]
+ollama = ["ollama>=0.3"]
+chroma = ["chromadb>=0.5"]
+qdrant = ["qdrant-client>=1.10"]
+otel = [
+    "opentelemetry-sdk>=1.26",
+    "opentelemetry-instrumentation-fastapi>=0.47b0",
+    "opentelemetry-exporter-otlp-proto-http>=1.26",
+]
+ui = ["streamlit>=1.36"]
+# Everything except dev tooling (handy for `pip install -e '.[all]'`).
+all = [
+    "sentence-transformers>=3.0",
+    "openai>=1.40",
+    "anthropic>=0.40",
+    "ollama>=0.3",
+    "chromadb>=0.5",
+    "qdrant-client>=1.10",
+    "opentelemetry-sdk>=1.26",
+    "opentelemetry-instrumentation-fastapi>=0.47b0",
+    "opentelemetry-exporter-otlp-proto-http>=1.26",
+    "streamlit>=1.36",
+]
+
+[project.scripts]
+rag = "rag.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/jjsanda/rag-system"
+Repository = "https://github.com/jjsanda/rag-system"
+Issues = "https://github.com/jjsanda/rag-system/issues"
+
+# uv dependency group (PEP 735) for dev/test tooling, not shipped with the package.
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=5.0",
+    "respx>=0.21",
+    "anyio>=4.4",
+    "ruff>=0.6",
+    "black>=24.8",
+    "mypy>=1.11",
+    "pre-commit>=3.8",
+    "pip-audit>=2.7",
+    "types-requests",
+    "types-PyYAML",
+]
+# Optional tooling used only to capture UI screenshots/GIF for the README.
+media = [
+    "playwright>=1.45",
+    "imageio>=2.34",
+    "pillow>=10.4",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rag"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/rag", "README.md", "LICENSE"]
+
+# --------------------------------------------------------------------------------------
+# Tooling configuration
+# --------------------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "evaluation", "ui"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",    # pycodestyle
+    "F",         # pyflakes
+    "I",         # isort
+    "N",         # pep8-naming
+    "UP",        # pyupgrade
+    "B",         # flake8-bugbear
+    "C4",        # comprehensions
+    "SIM",       # simplify
+    "TID",       # tidy-imports
+    "PTH",       # use-pathlib
+    "RUF",       # ruff-specific
+]
+ignore = [
+    "E501",    # line length handled by black
+    "B008",    # FastAPI intentionally uses function calls (Depends) in argument defaults
+    "RUF022",  # keep __all__ grouped by category (curated) rather than alphabetised
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["N802", "N803", "S101"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["rag"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.mypy]
+# Checked against 3.12 (the dev/CI interpreter): NumPy 2.5's stubs use PEP 695 `type`
+# statements that mypy rejects under 3.11. Ruff still enforces the 3.11 syntax floor
+# (target-version = py311) and the pytest matrix runs on both 3.11 and 3.12.
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+explicit_package_bases = true
+namespace_packages = true
+files = ["src", "tests", "evaluation"]
+
+# Third-party libraries that ship no type information.
+[[tool.mypy.overrides]]
+module = [
+    "faiss.*",
+    "chromadb.*",
+    "qdrant_client.*",
+    "sentence_transformers.*",
+    "ollama.*",
+    "diskcache.*",
+    "sse_starlette.*",
+    "tiktoken.*",
+    "imageio.*",
+    "opentelemetry.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-q --strict-markers"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "unit: fast, isolated unit tests (no network, no native services)",
+    "integration: API/adapter integration tests using mocked providers",
+    "e2e: end-to-end tests over the sample corpus using the offline stack",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["rag"]
+omit = ["*/__main__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+    "if __name__ == .__main__.:",
+]

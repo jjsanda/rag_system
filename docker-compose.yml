@@ -1,0 +1,62 @@
+# RAG System local stack.
+#   docker compose up --build            # api + ui + qdrant (api defaults to offline FAISS)
+#   RAG_VECTOR_STORE=qdrant docker compose up   # switch the api to the Qdrant service
+#   docker compose --profile ollama up    # also start a local Ollama for RAG_LLM_PROVIDER=ollama
+name: rag-system
+
+x-rag-image: &rag-image
+  build:
+    context: .
+    dockerfile: deploy/docker/Dockerfile
+  image: rag-system:latest
+
+services:
+  api:
+    <<: *rag-image
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      RAG_EMBEDDING_PROVIDER: ${RAG_EMBEDDING_PROVIDER:-fake}
+      RAG_LLM_PROVIDER: ${RAG_LLM_PROVIDER:-extractive}
+      RAG_VECTOR_STORE: ${RAG_VECTOR_STORE:-faiss}
+      RAG_QDRANT_URL: http://qdrant:6333
+      RAG_OLLAMA_BASE_URL: http://ollama:11434
+      RAG_FAISS_PATH: /app/.data/faiss
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - rag-data:/app/.data
+
+  ui:
+    <<: *rag-image
+    command: ["streamlit", "run", "ui/streamlit_app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    environment:
+      RAG_API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+volumes:
+  rag-data:
+  qdrant-data:
+  ollama-data:

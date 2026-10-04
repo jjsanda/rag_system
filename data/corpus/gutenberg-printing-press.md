@@ -1,0 +1,5 @@
+# The Gutenberg Printing Press
+
+Around 1440, in the German city of Mainz, the goldsmith Johannes Gutenberg introduced the printing press that now carries his name. His key innovation was movable metal type: individual letters cast in metal that could be set into a page, used to print many copies, then rearranged for the next page. He paired the reusable type with an oil-based ink that clung to metal and a wooden press adapted from the screw presses already used to crush grapes and olives. One of the first major works he printed, around 1455, was the Gutenberg Bible, often called the 42-line Bible because most of its columns run to 42 lines.
+
+The effect was enormous. Before the press, European books were copied by hand, which kept them scarce and expensive. Printing made books far faster and cheaper to produce, and over the following decades it helped spread literacy, knowledge, and new ideas more widely than before. It is now seen as one of the most influential developments in the history of communication.

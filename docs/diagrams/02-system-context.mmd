@@ -1,0 +1,21 @@
+%% C4 level 1: System Context.
+flowchart TB
+    user(["User / Client application"])
+
+    subgraph boundary["RAG System"]
+        svc["RAG Service<br/>FastAPI API + Streamlit UI"]
+    end
+
+    emb["Embedding providers<br/>sentence-transformers · OpenAI"]
+    llm["LLM providers<br/>Ollama · OpenAI · Anthropic"]
+
+    user -->|"asks questions, gets cited<br/>answers (HTTP / SSE)"| svc
+    svc -->|"embed text"| emb
+    svc -->|"generate grounded answer"| llm
+
+    classDef core fill:#EEF2FF,stroke:#4F46E5,color:#1E1B4B,rx:6,ry:6;
+    classDef ext fill:#F1F5F9,stroke:#475569,color:#0F172A,rx:6,ry:6;
+    classDef actor fill:#F3E8FF,stroke:#7C3AED,color:#3B0764;
+    class svc core;
+    class emb,llm ext;
+    class user actor;

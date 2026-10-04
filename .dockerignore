@@ -1,0 +1,33 @@
+# Keep the build context (and final image) small.
+.git/
+.github/
+.venv/
+venv/
+.data/
+node_modules/
+
+# Caches & build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+coverage.xml
+htmlcov/
+dist/
+build/
+
+# Docs, diagrams and media are not needed at runtime
+docs/
+*.md
+!README.md
+
+# Tests and evaluation are not shipped in the runtime image
+tests/
+evaluation/
+
+# Local env files
+.env
+.env.*
+!.env.example

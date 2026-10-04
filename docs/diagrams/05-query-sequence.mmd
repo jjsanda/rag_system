@@ -1,0 +1,21 @@
+%% Query flow: retrieve, assemble a grounded prompt, stream a cited answer.
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant UI as Streamlit UI
+    participant API as FastAPI
+    participant E as Embedder
+    participant S as Vector store
+    participant L as LLM
+
+    U->>UI: ask a question
+    UI->>API: POST /api/v1/query/stream
+    API->>E: embed(question)
+    E-->>API: query vector
+    API->>S: search(top-k)
+    S-->>API: relevant chunks (+ scores)
+    Note over API: assemble grounded prompt<br/>system-prompt isolation + injection guards
+    API->>L: stream(system, prompt)
+    L-->>API: answer tokens…
+    API-->>UI: SSE events: meta, sources, token, done
+    UI-->>U: streamed answer with [n] citations

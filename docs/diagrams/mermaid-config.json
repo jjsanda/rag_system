@@ -1,0 +1,14 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Inter, Segoe UI, Helvetica, Arial, sans-serif",
+    "fontSize": "15px",
+    "primaryColor": "#EEF2FF",
+    "primaryBorderColor": "#4F46E5",
+    "primaryTextColor": "#1E1B4B",
+    "lineColor": "#64748B",
+    "tertiaryColor": "#F8FAFC"
+  },
+  "flowchart": { "curve": "basis", "htmlLabels": true, "padding": 14, "useMaxWidth": true },
+  "sequence": { "useMaxWidth": true, "mirrorActors": false }
+}

@@ -1,0 +1,16 @@
+apiVersion: v2
+name: rag-system
+description: A provider-agnostic Retrieval-Augmented Generation service (FastAPI API + Streamlit UI).
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/jjsanda/rag-system
+sources:
+  - https://github.com/jjsanda/rag-system
+keywords:
+  - rag
+  - retrieval-augmented-generation
+  - fastapi
+  - llm
+maintainers:
+  - name: Josef Sanda

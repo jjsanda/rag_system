@@ -1,0 +1,27 @@
+{{ .Chart.Name }} {{ .Chart.AppVersion }} has been deployed as "{{ .Release.Name }}".
+
+Configured providers (from .Values.config):
+  embedding : {{ .Values.config.RAG_EMBEDDING_PROVIDER | default "fake" }}
+  llm       : {{ .Values.config.RAG_LLM_PROVIDER | default "extractive" }}
+  store     : {{ .Values.config.RAG_VECTOR_STORE | default "faiss" }}{{ if .Values.qdrant.enabled }} (in-cluster Qdrant enabled){{ end }}
+
+Reach the API:
+{{- if .Values.ingress.enabled }}
+  Ingress is enabled. Try the configured host(s):
+  {{- range .Values.ingress.hosts }}
+    http://{{ .host }}
+  {{- end }}
+{{- else }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "rag-system.fullname" . }}-api {{ .Values.api.service.port }}:{{ .Values.api.service.port }}
+  curl http://localhost:{{ .Values.api.service.port }}/health
+  # then ingest + query:
+  curl -X POST http://localhost:{{ .Values.api.service.port }}/api/v1/ingest -H 'content-type: application/json' -d '{"use_sample_corpus": true}'
+{{- end }}
+{{- if .Values.ui.enabled }}
+
+Reach the UI:
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "rag-system.fullname" . }}-ui {{ .Values.ui.service.port }}:{{ .Values.ui.service.port }}
+  open http://localhost:{{ .Values.ui.service.port }}
+{{- end }}
+
+Verify the release with:  helm test {{ .Release.Name }}

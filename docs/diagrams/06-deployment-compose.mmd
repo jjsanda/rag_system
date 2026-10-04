@@ -1,0 +1,23 @@
+%% Local deployment with docker compose.
+flowchart TB
+    browser(["Browser / curl"])
+
+    subgraph compose["docker compose"]
+        api["api · :8000<br/>FastAPI (uvicorn)"]
+        ui["ui · :8501<br/>Streamlit"]
+        qd[("qdrant · :6333")]
+        ol["ollama · :11434<br/>(profile: ollama)"]
+    end
+
+    browser --> ui
+    browser --> api
+    ui -->|RAG_API_URL| api
+    api -.->|RAG_VECTOR_STORE=qdrant| qd
+    api -.->|RAG_LLM_PROVIDER=ollama| ol
+
+    classDef svc fill:#EEF2FF,stroke:#4F46E5,color:#1E1B4B,rx:6,ry:6;
+    classDef ui fill:#F3E8FF,stroke:#7C3AED,color:#3B0764,rx:6,ry:6;
+    classDef store fill:#DCFCE7,stroke:#16A34A,color:#14532D,rx:6,ry:6;
+    class api svc;
+    class ui,browser ui;
+    class qd,ol store;

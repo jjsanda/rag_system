@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.cache/
+
+# Build output (root-anchored: must not hide a nested build/ or dist/ directory)
+/build/
+/dist/
+
+# Virtual environments (uv creates .venv; the others are root-anchored for the same reason)
+.venv/
+/venv/
+/env/
+
+# uv
+# (uv.lock IS committed: it pins the reproducible toolchain)
+
+# Local runtime data: FAISS/Chroma stores and the embedding cache all live under .data/
+# (never commit ingested vectors)
+.data/
+*.faiss
+*.log
+
+# Secrets / environment
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+**/.streamlit/secrets.toml
+
+# Local deployment overrides (may hold API keys). Name a personal Helm values
+# file values<suffix>.local.yaml, e.g. `helm install ... -f values.local.yaml`
+/docker-compose.override.yml
+values*.local.yaml
+values*.local.yml
+
+# Helm (`helm package` output; Chart.lock would be committed, like uv.lock)
+rag-system-*.tgz
+
+# Node (mermaid-cli is run via npx; nothing is installed into the repo)
+node_modules/
+
+# Media capture working files
+docs/assets/_frames/
+
+# Editors / OS / local tooling
+.idea/
+.vscode/
+.claude/settings.local.json
+*.sw[op]
+*~
+*.orig
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,34 @@
+%% C4 level 2: Containers / components.
+flowchart TB
+    user(["User"])
+
+    subgraph sys["RAG System"]
+        ui["Streamlit UI<br/>(HTTP client of the API)"]
+        api["FastAPI service<br/>/api/v1 · SSE · /health · /metrics"]
+        core["Domain core<br/>chunk · prompt · pipeline (framework-free)"]
+        emb["Embedder adapter"]
+        llm["LLM adapter"]
+        store[("Vector store<br/>FAISS · Chroma · Qdrant")]
+        cache[("Caches<br/>embedding · response")]
+    end
+
+    ext["External providers<br/>OpenAI · Anthropic · Ollama"]
+
+    user --> ui --> api --> core
+    core --> emb
+    core --> llm
+    core --> store
+    emb --> cache
+    emb -.->|cloud / local| ext
+    llm -.->|cloud / local| ext
+
+    classDef core fill:#EEF2FF,stroke:#4F46E5,color:#1E1B4B,rx:6,ry:6;
+    classDef adapter fill:#E0F2FE,stroke:#0284C7,color:#0C4A6E,rx:6,ry:6;
+    classDef store fill:#DCFCE7,stroke:#16A34A,color:#14532D,rx:6,ry:6;
+    classDef ext fill:#F1F5F9,stroke:#475569,color:#0F172A,rx:6,ry:6;
+    classDef ui fill:#F3E8FF,stroke:#7C3AED,color:#3B0764,rx:6,ry:6;
+    class api,core core;
+    class emb,llm adapter;
+    class store,cache store;
+    class ext ext;
+    class ui,user ui;

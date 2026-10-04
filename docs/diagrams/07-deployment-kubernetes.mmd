@@ -1,0 +1,31 @@
+%% Kubernetes deployment via the Helm chart.
+flowchart TB
+    client(["Client"])
+    ingress{{"Ingress"}}
+
+    subgraph ns["Kubernetes namespace"]
+        uisvc(["Service: ui"])
+        apisvc(["Service: api"])
+        ui["Deployment: ui<br/>Streamlit pods"]
+        api["Deployment: api + HPA<br/>pods · /health · /ready"]
+        cfg["ConfigMap<br/>(RAG_* config)"]
+        sec["Secret<br/>(API keys)"]
+        qd[("Qdrant (optional)")]
+    end
+
+    client --> ingress
+    ingress --> uisvc --> ui
+    ingress --> apisvc --> api
+    ui -->|RAG_API_URL| apisvc
+    cfg -.-> api
+    sec -.-> api
+    api -.->|optional| qd
+
+    classDef svc fill:#EEF2FF,stroke:#4F46E5,color:#1E1B4B,rx:6,ry:6;
+    classDef ui fill:#F3E8FF,stroke:#7C3AED,color:#3B0764,rx:6,ry:6;
+    classDef store fill:#DCFCE7,stroke:#16A34A,color:#14532D,rx:6,ry:6;
+    classDef cfg fill:#FEF9C3,stroke:#CA8A04,color:#713F12,rx:6,ry:6;
+    class api,apisvc svc;
+    class ui,uisvc,client ui;
+    class qd store;
+    class cfg,sec cfg;

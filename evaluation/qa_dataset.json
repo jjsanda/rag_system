@@ -1,0 +1,77 @@
+{
+  "description": "Labeled QA set over the sample corpus (data/corpus). `relevant_doc_ids` are the gold source document ids (file stems); `key_facts` are case-insensitive substrings a correct answer should contain.",
+  "items": [
+    {
+      "id": "photosynthesis-location",
+      "question": "Where do the light-dependent reactions of photosynthesis take place?",
+      "relevant_doc_ids": ["photosynthesis"],
+      "key_facts": ["thylakoid"]
+    },
+    {
+      "id": "photosynthesis-byproduct",
+      "question": "What gas is released as a byproduct of photosynthesis?",
+      "relevant_doc_ids": ["photosynthesis"],
+      "key_facts": ["oxygen"]
+    },
+    {
+      "id": "water-cycle-transpiration",
+      "question": "What process releases water vapor from plant leaves in the water cycle?",
+      "relevant_doc_ids": ["the-water-cycle"],
+      "key_facts": ["transpiration"]
+    },
+    {
+      "id": "water-cycle-driver",
+      "question": "What two things mainly drive the water cycle?",
+      "relevant_doc_ids": ["the-water-cycle"],
+      "key_facts": ["sun", "gravity"]
+    },
+    {
+      "id": "tcp-udp-connectionless",
+      "question": "Which transport protocol is connectionless, TCP or UDP?",
+      "relevant_doc_ids": ["tcp-vs-udp"],
+      "key_facts": ["udp", "connectionless"]
+    },
+    {
+      "id": "tcp-handshake",
+      "question": "What handshake does TCP use to establish a connection?",
+      "relevant_doc_ids": ["tcp-vs-udp"],
+      "key_facts": ["three-way handshake"]
+    },
+    {
+      "id": "aqueducts-gravity",
+      "question": "What force moved water through Roman aqueducts?",
+      "relevant_doc_ids": ["roman-aqueducts"],
+      "key_facts": ["gravity"]
+    },
+    {
+      "id": "honeybee-castes",
+      "question": "How many castes are there in a honeybee colony?",
+      "relevant_doc_ids": ["honeybee-colonies"],
+      "key_facts": ["three", "castes"]
+    },
+    {
+      "id": "honeybee-waggle",
+      "question": "How do honeybees communicate the direction and distance of food?",
+      "relevant_doc_ids": ["honeybee-colonies"],
+      "key_facts": ["waggle dance"]
+    },
+    {
+      "id": "jwst-lagrange",
+      "question": "Near which Lagrange point does the James Webb Space Telescope operate?",
+      "relevant_doc_ids": ["james-webb-space-telescope"],
+      "key_facts": ["l2"]
+    },
+    {
+      "id": "espresso-pressure",
+      "question": "What pressure is used when extracting espresso?",
+      "relevant_doc_ids": ["espresso-extraction"],
+      "key_facts": ["nine bars"]
+    },
+    {
+      "id": "gutenberg-origin",
+      "question": "Who introduced the printing press to Europe?",
+      "relevant_doc_ids": ["gutenberg-printing-press"],
+      "key_facts": ["gutenberg"]
+    }
+  ]
+}

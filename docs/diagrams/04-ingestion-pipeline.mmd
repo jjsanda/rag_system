@@ -1,0 +1,14 @@
+%% Ingestion pipeline.
+flowchart LR
+    src[["data/corpus/*.md"]] --> load["Load<br/>filesystem loader"]
+    load --> clean["Clean<br/>normalise unicode & whitespace"]
+    clean --> chunk["Chunk<br/>token-aware, with overlap"]
+    chunk --> embed["Embed<br/>batched + cached"]
+    embed --> upsert[("Upsert<br/>vector store")]
+
+    classDef step fill:#E0F2FE,stroke:#0284C7,color:#0C4A6E,rx:6,ry:6;
+    classDef io fill:#EEF2FF,stroke:#4F46E5,color:#1E1B4B,rx:6,ry:6;
+    classDef store fill:#DCFCE7,stroke:#16A34A,color:#14532D,rx:6,ry:6;
+    class load,clean,chunk,embed step;
+    class src io;
+    class upsert store;

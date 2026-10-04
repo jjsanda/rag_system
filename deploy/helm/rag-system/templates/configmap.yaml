@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rag-system.fullname" . }}-config
+  labels:
+    {{- include "rag-system.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.config }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- if .Values.qdrant.enabled }}
+  RAG_QDRANT_URL: {{ printf "http://%s-qdrant:%d" (include "rag-system.fullname" .) (int .Values.qdrant.port) | quote }}
+  {{- end }}

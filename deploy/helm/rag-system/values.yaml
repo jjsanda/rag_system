@@ -1,0 +1,137 @@
+# Default values for the rag-system chart.
+# Out of the box this deploys the fully-offline stack (fake embedder + extractive answerer
+# + FAISS); no secrets required. Switch providers/stores by editing `config`/`secrets`.
+
+image:
+  repository: ghcr.io/jjsanda/rag-system
+  tag: "" # defaults to the chart appVersion
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false # the API writes the FAISS index under /app/.data
+  capabilities:
+    drop: ["ALL"]
+
+# Non-secret configuration -> rendered into a ConfigMap and injected via envFrom.
+config:
+  RAG_ENV: prod
+  RAG_LOG_JSON: "true"
+  RAG_EMBEDDING_PROVIDER: fake
+  RAG_LLM_PROVIDER: extractive
+  RAG_VECTOR_STORE: faiss
+  RAG_FAISS_PATH: /app/.data/faiss
+  RAG_CORPUS_DIR: /app/data/corpus
+
+# Secret configuration (API keys) -> rendered into a Secret and injected via envFrom.
+# Leave empty for the offline stack. For production, prefer an external secret manager.
+secrets: {}
+#  OPENAI_API_KEY: ""
+#  ANTHROPIC_API_KEY: ""
+#  RAG_API_KEY: ""
+
+api:
+  replicaCount: 2
+  containerPort: 8000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  service:
+    type: ClusterIP
+    port: 8000
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 75
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 20
+    periodSeconds: 20
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  # Persist the FAISS index across restarts. If disabled, an emptyDir is used (ephemeral;
+  # re-ingest after a restart). For real persistence prefer the Qdrant store.
+  persistence:
+    enabled: false
+    size: 1Gi
+    storageClass: ""
+
+ui:
+  enabled: true
+  replicaCount: 1
+  containerPort: 8501
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+    port: 8501
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  # Each host path routes to either the "api" or "ui" service.
+  hosts:
+    - host: rag.local
+      paths:
+        - path: /
+          pathType: Prefix
+          service: ui
+        - path: /api
+          pathType: Prefix
+          service: api
+  tls: []
+
+# Optional in-cluster Qdrant for a self-contained demo. For production use an external or
+# managed Qdrant and point RAG_QDRANT_URL at it (set qdrant.enabled=false).
+qdrant:
+  enabled: false
+  image: qdrant/qdrant:v1.12.4
+  port: 6333
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  persistence:
+    enabled: true
+    size: 2Gi
+    storageClass: ""
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

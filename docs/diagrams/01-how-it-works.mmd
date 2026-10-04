@@ -1,0 +1,9 @@
+%% Plain-English overview for non-technical readers.
+flowchart LR
+    A["Your documents"] --> B["Understand & index<br/>split into passages, turn into vectors"]
+    B --> C["Ask a question"]
+    C --> D["Find the most relevant passages"]
+    D --> E["Write a grounded answer<br/>that cites its sources"]
+
+    classDef step fill:#EEF2FF,stroke:#4F46E5,color:#1E1B4B,rx:8,ry:8;
+    class A,B,C,D,E step;
